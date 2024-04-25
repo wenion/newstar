@@ -64,6 +64,8 @@ ENV PATH /var/lib/hypothesis/bin:$PATH
 ENV PYTHONIOENCODING utf_8
 ENV PYTHONPATH /var/lib/hypothesis:$PYTHONPATH
 
+RUN dos2unix bin/*
+
 # Start the web server by default
 USER hypothesis
 CMD ["init-env", "supervisord", "-c" , "conf/supervisord.conf"]
