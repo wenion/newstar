@@ -153,3 +153,7 @@ def includeme(config):  # pragma: no cover
     config.register_service_factory(
         "h.services.analytics.analytics_service_factory", name="analytics"
     )
+
+    config.register_service_factory(
+        "h.services.location.location_factory", name="location"
+    )

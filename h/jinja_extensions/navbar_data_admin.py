@@ -112,4 +112,13 @@ _ADMIN_MENU = [
         "title": "Search",
         "route": "admin.search",
     },
+    {
+        "id": "locations",
+        "permission": Permission.AdminPage.LOW_RISK,
+        "title": "Locations",
+        "children": [
+            {"route": "admin.locations", "title": "List locations"},
+            {"route": "admin.locations_create", "title": "Create a location"},
+        ],
+    },
 ]

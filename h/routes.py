@@ -77,6 +77,21 @@ def includeme(config):  # pylint: disable=too-many-statements
     config.add_route("admin.users_rename", "/admin/users/rename")
     config.add_route("admin.search", "/admin/search")
 
+    config.add_route("admin.locations", "/admin/locations")
+    config.add_route("admin.locations_create", "/admin/locations/new")
+    config.add_route(
+        "admin.locations_delete",
+        "/admin/locations/delete/{id}",
+        factory="h.traversal.LocationRoot",
+        traverse="/{id}",
+    )
+    config.add_route(
+        "admin.locations_edit",
+        "/admin/locations/{id}",
+        factory="h.traversal.LocationRoot",
+        traverse="/{id}",
+    )
+
     # Annotations & stream
     config.add_route(
         "annotation", "/a/{id}", factory="h.traversal:AnnotationRoot", traverse="/{id}"
