@@ -42,6 +42,11 @@
   background-color: color.$brand;
 }
 
+.btn--back {
+  background-color: rgb(125 211 252);
+  margin-left: 16px;
+}
+
 @include layout.touch-input {
   .btn {
     min-height: layout.$touch-target-size;
