@@ -26,7 +26,7 @@ bleach==6.1.0
     # via -r requirements/prod.txt
 build==1.0.3
     # via pip-tools
-celery==5.3.6
+celery==5.4.0
     # via -r requirements/prod.txt
 certifi==2024.2.2
     # via
