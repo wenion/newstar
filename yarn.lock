@@ -5804,7 +5804,7 @@ __metadata:
     sass: ^1.72.0
     scroll-into-view: ^1.16.2
     sinon: ^17.0.1
-    syn: ^0.2.2
+    syn: ^0.15.0
   languageName: unknown
   linkType: soft
 
@@ -9886,10 +9886,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"syn@npm:^0.2.2":
-  version: 0.2.2
-  resolution: "syn@npm:0.2.2"
-  checksum: 936f7de14537e472ad089515740419a2e537ef4ab868395a1602e22894ea8ad98ba2d6c2457d7ea06b0f7ab171951da8f0181e9ac37276bb557ff9725471fab1
+"syn@npm:^0.15.0":
+  version: 0.15.0
+  resolution: "syn@npm:0.15.0"
+  checksum: 1333290d9e5f0184f3481bf414085c51a532a900f8545499a89f32570a40387117dbe8a4b325efcf3ba7f4181d86106d5876de94903af0b3e520faddc02ab3e6
   languageName: node
   linkType: hard
 
