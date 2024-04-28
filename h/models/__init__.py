@@ -40,6 +40,7 @@ from h.models.token import Token
 from h.models.user import User
 from h.models.user_identity import UserIdentity
 from h.models.location import Location
+from h.models.level import Level
 
 __all__ = (
     "Activation",
@@ -67,4 +68,5 @@ __all__ = (
     "User",
     "UserIdentity",
     "Location",
+    "Level",
 )

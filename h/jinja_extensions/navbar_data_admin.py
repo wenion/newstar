@@ -121,4 +121,13 @@ _ADMIN_MENU = [
             {"route": "admin.locations_create", "title": "Create a location"},
         ],
     },
+    {
+        "id": "levels",
+        "permission": Permission.AdminPage.LOW_RISK,
+        "title": "Levels",
+        "children": [
+            {"route": "admin.levels", "title": "List levels"},
+            {"route": "admin.levels_create", "title": "Create a level"},
+        ],
+    },
 ]

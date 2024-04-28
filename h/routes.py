@@ -92,6 +92,21 @@ def includeme(config):  # pylint: disable=too-many-statements
         traverse="/{id}",
     )
 
+    config.add_route("admin.levels", "/admin/levels")
+    config.add_route("admin.levels_create", "/admin/levels/new")
+    config.add_route(
+        "admin.levels_delete",
+        "/admin/levels/delete/{id}",
+        factory="h.traversal.LevelRoot",
+        traverse="/{id}",
+    )
+    config.add_route(
+        "admin.levels_edit",
+        "/admin/levels/{id}",
+        factory="h.traversal.LevelRoot",
+        traverse="/{id}",
+    )
+
     # Annotations & stream
     config.add_route(
         "annotation", "/a/{id}", factory="h.traversal:AnnotationRoot", traverse="/{id}"

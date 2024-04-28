@@ -1,0 +1,49 @@
+{% extends "h:templates/layouts/admin.html.jinja2" %}
+
+{% from '../includes/search_form.html.jinja2' import search_form %}
+
+{% set page_id = 'levels' %}
+{% set page_title = 'Levels' %}
+
+{% block content %}
+
+  {{ search_form('Search by name…', request.params.get('q')) }}
+
+  <div class="table-responsive">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Id</th>
+          <th>Name</th>
+          <th>Abbreviation</th>
+          <th>From</th>
+          <th>To</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for org in results %}
+          <tr>
+            <td>
+              {% set edit_url = request.route_url('admin.levels_edit', id=org.id) %}
+              <a href="{{ edit_url }}">{{ org.id }}</a>
+            </td>
+            <td>
+              <a href="{{ edit_url }}">{{ org.name }}</a>
+            </td>
+            <td>
+              <a href="{{ edit_url }}">{{ org.abbreviation }}</a>
+            </td>
+            <td>
+              <a href="{{ edit_url }}">{{ org.start_age }}</a>
+            </td>
+            <td>
+              <a href="{{ edit_url }}">{{ org.end_age }}</a>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  {% include "h:templates/includes/paginator.html.jinja2" %}
+{% endblock %}
