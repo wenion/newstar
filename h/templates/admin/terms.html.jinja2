@@ -1,0 +1,49 @@
+{% extends "h:templates/layouts/admin.html.jinja2" %}
+
+{% from '../includes/search_form.html.jinja2' import search_form %}
+
+{% set page_id = 'terms' %}
+{% set page_title = 'Terms' %}
+
+{% block content %}
+
+  {{ search_form('Search by year…', request.params.get('q')) }}
+
+  <div class="table-responsive">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Year</th>
+          <th>From</th>
+          <th>To</th>
+          <th>Number of Weeks</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for org in results %}
+          <tr>
+            <td>
+              {% set edit_url = request.route_url('admin.terms_edit', id=org.id) %}
+              <a href="{{ edit_url }}">{{ org.name }} {{ org.number }}</a>
+            </td>
+            <td>
+              <a href="{{ edit_url }}">{{ org.year }}</a>
+            </td>
+            <td>
+              <a href="{{ edit_url }}">{{ org.start_date.date() }}</a>
+            </td>
+            <td>
+              <a href="{{ edit_url }}">{{ org.end_date.date() }}</a>
+            </td>
+            <td>
+              <a href="{{ edit_url }}">{{ org.number_of_weeks }}</a>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  {% include "h:templates/includes/paginator.html.jinja2" %}
+{% endblock %}

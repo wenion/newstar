@@ -107,6 +107,21 @@ def includeme(config):  # pylint: disable=too-many-statements
         traverse="/{id}",
     )
 
+    config.add_route("admin.terms", "/admin/terms")
+    config.add_route("admin.terms_create", "/admin/terms/new")
+    config.add_route(
+        "admin.terms_delete",
+        "/admin/terms/delete/{id}",
+        factory="h.traversal.TermRoot",
+        traverse="/{id}",
+    )
+    config.add_route(
+        "admin.terms_edit",
+        "/admin/terms/{id}",
+        factory="h.traversal.TermRoot",
+        traverse="/{id}",
+    )
+
     # Annotations & stream
     config.add_route(
         "annotation", "/a/{id}", factory="h.traversal:AnnotationRoot", traverse="/{id}"

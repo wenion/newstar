@@ -41,6 +41,7 @@ from h.models.user import User
 from h.models.user_identity import UserIdentity
 from h.models.location import Location
 from h.models.level import Level
+from h.models.term import Term
 
 __all__ = (
     "Activation",
@@ -69,4 +70,5 @@ __all__ = (
     "UserIdentity",
     "Location",
     "Level",
+    "Term",
 )

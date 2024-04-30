@@ -66,6 +66,7 @@ from h.traversal.organization import OrganizationContext, OrganizationRoot
 from h.traversal.user import UserByIDRoot, UserByNameRoot, UserContext, UserRoot
 from h.traversal.location import LocationContext, LocationRoot
 from h.traversal.level import LevelContext, LevelRoot
+from h.traversal.term import TermContext, TermRoot
 
 __all__ = (
     "AnnotationContext",
@@ -82,4 +83,6 @@ __all__ = (
     "LocationRoot",
     "LevelContext",
     "LevelRoot",
+    "TermContext",
+    "TermRoot",
 )

@@ -160,3 +160,6 @@ def includeme(config):  # pragma: no cover
     config.register_service_factory(
         "h.services.level.level_factory", name="level"
     )
+    config.register_service_factory(
+        "h.services.term.term_factory", name="term"
+    )
