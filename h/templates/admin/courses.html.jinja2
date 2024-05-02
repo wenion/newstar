@@ -1,0 +1,57 @@
+{% extends "h:templates/layouts/admin.html.jinja2" %}
+
+{% from '../includes/search_form.html.jinja2' import search_form %}
+
+{% set page_id = 'courses' %}
+{% set page_title = 'Courses' %}
+
+{% block content %}
+
+  {{ search_form('Search by Code', request.params.get('q')) }}
+
+  <div class="table-responsive">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Year</th>
+          <th>Location</th>
+          <th>Day</th>
+          <th>Time</th>
+          <th>Level</th>
+          <th>Class code</th>
+          <th>Memeo</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for org in results %}
+          <tr>
+            <td>
+              {% set edit_url = request.route_url('admin.courses_edit', id=org.id) %}
+              <a href="{{ edit_url }}">{{ org.year }}</a>
+            </td>
+            <td>
+              <a href="{{ edit_url }}">{{ org.location.abbreviation }}</a>
+            </td>
+            <td>
+              <a href="{{ edit_url }}">{{ org.day }}</a>
+            </td>
+            <td>
+              <a href="{{ edit_url }}">{{ org.time }}</a>
+            </td>
+            <td>
+              <a href="{{ edit_url }}">{{ org.level.name }}</a>
+            </td>
+            <td>
+              <a href="{{ edit_url }}">{{ org.code }}</a>
+            </td>
+            <td>
+              <a href="{{ edit_url }}">{{ org.memeo }}</a>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  {% include "h:templates/includes/paginator.html.jinja2" %}
+{% endblock %}

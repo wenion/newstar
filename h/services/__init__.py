@@ -8,6 +8,7 @@ from h.services.auth_cookie import AuthCookieService
 from h.services.bulk_api import BulkAnnotationService, BulkGroupService
 from h.services.job_queue import JobQueueService
 from h.services.subscription import SubscriptionService
+from h.services.course import CourseService
 
 
 def includeme(config):  # pragma: no cover
@@ -162,4 +163,7 @@ def includeme(config):  # pragma: no cover
     )
     config.register_service_factory(
         "h.services.term.term_factory", name="term"
+    )
+    config.register_service_factory(
+        "h.services.course.course_factory", iface=CourseService, name="course"
     )

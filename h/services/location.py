@@ -41,6 +41,9 @@ class LocationService:
     def get_by_name(self, name):
         return self.session.query(Location).filter(sa._or(Location.name==name, Location.abbreviation==name)).all()
 
+    def get_all(self):
+        return self.session.query(Location).all()
+
 
 def location_factory(_context, request):
     """Return a OrganizationService instance for the request."""

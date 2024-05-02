@@ -41,6 +41,9 @@ class LevelService:
     def get_by_name(self, name):
         return self.session.query(Level).filter(sa._or(Level.name==name, Level.abbreviation==name)).all()
 
+    def get_all(self):
+        return self.session.query(Level).all()
+
 
 def level_factory(_context, request):
     """Return a OrganizationService instance for the request."""

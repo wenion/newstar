@@ -139,4 +139,13 @@ _ADMIN_MENU = [
             {"route": "admin.terms_create", "title": "Create a term"},
         ],
     },
+    {
+        "id": "courses",
+        "permission": Permission.AdminPage.LOW_RISK,
+        "title": "Courses",
+        "children": [
+            {"route": "admin.courses", "title": "List courses"},
+            {"route": "admin.courses_create", "title": "Create a course"},
+        ],
+    },
 ]
