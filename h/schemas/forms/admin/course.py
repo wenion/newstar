@@ -35,7 +35,7 @@ class CourseSchema(CSRFSchema):
     )
 
     location_id = colander.SchemaNode(
-        colander.Int(),
+        colander.String(),
         title=_("Location"),
         widget=course_location_select_widget,
     )
@@ -54,7 +54,7 @@ class CourseSchema(CSRFSchema):
     )
 
     level_id = colander.SchemaNode(
-        colander.Int(),
+        colander.String(),
         title=_("Level"),
         widget=course_level_select_widget,
     )

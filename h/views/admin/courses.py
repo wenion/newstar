@@ -114,8 +114,8 @@ class CourseCreateController:
 )
 class CourseEditController:
     def __init__(self, context, request):
-        location_list = [(item.id, item.name) for item in request.find_service(name='location').get_all()]
-        level_list = [(item.id, item.name) for item in request.find_service(name='level').get_all()]
+        location_list = [(str(item.id), item.name) for item in request.find_service(name='location').get_all()]
+        level_list = [(str(item.id), item.name) for item in request.find_service(name='level').get_all()]
 
         self.course = context.course
         self.request = request
@@ -188,7 +188,15 @@ class CourseEditController:
     def _update_appstruct(self):
         org = self.course
         self.form.set_appstruct(
-            {"year": org.year, "location_id": org.location_id, "day": org.day, "time": org.time, "level_id": org.level_id, "code": org.code, "memeo": org.memeo}
+            {
+                "year": org.year,
+                "location_id": org.location_id,
+                "day": org.day,
+                "time": org.time,
+                "level_id": org.level_id,
+                "code": org.code,
+                "memeo": org.memeo,
+            }
         )
 
     def _template_context(self):
