@@ -26,6 +26,9 @@ class CourseService:
     def get_by_code(self, code):
         return self.session.query(Course).filter_by(code=code).one_or_none()
 
+    def get_all(self):
+        return self.session.query(Course).all()
+
 
 def course_factory(_context, request):
     """Return a OrganizationService instance for the request."""

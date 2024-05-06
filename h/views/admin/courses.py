@@ -47,7 +47,7 @@ def index(_context, request):
     return (
         request.db.query(Course)
         .filter(*filter_terms)
-        .order_by(Course.year.asc(), case_statement, Course.time.asc(), Course.code.asc())
+        .order_by(Course.year.asc(), Course.location_id.asc(), Course.level_id.asc(), case_statement, Course.time.asc(), Course.code.asc())
     )
 
 
@@ -85,7 +85,7 @@ class CourseCreateController:
             level = self.request.find_service(name="level").get_by_id(level_id)
             code = location.abbreviation + day + time + level.abbreviation
 
-            course = Course(year=year, location_id=location_id, day=day, time=time, level_id=level_id, code=code, memeo=memeo)
+            course = Course(year=year, location=location, day=day, time=time, level=level, code=code, memeo=memeo)
 
             self.request.db.add(course)
             self.request.session.flash(
