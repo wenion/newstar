@@ -19,6 +19,15 @@ number = [('1', 1),
           ('6', 6),]
 
 
+def calculate_weeks(start_date, end_date):
+    delta = end_date - start_date
+
+    # Calculate the number of weeks (rounding up to the nearest week)
+    weeks = (delta.days + 6) // 7  # Adding 6 to ensure rounding up
+
+    return weeks
+
+
 @view_config(
     route_name="admin.terms",
     request_method="GET",
@@ -36,7 +45,7 @@ def index(_context, request):
     return (
         request.db.query(Term)
         .filter(*filter_terms)
-        .order_by(Term.start_date.asc())
+        .order_by(Term.number.asc(), Term.start_date.asc())
     )
 
 
@@ -65,7 +74,7 @@ class TermCreateController:
             year = appstruct["year"]
             start_date = appstruct["start_date"]
             end_date = appstruct["end_date"]
-            number_of_weeks = appstruct["number_of_weeks"]
+            number_of_weeks = calculate_weeks(start_date, end_date)
             term = Term(name=name, number=number, year=year, start_date=start_date, end_date=end_date, number_of_weeks=number_of_weeks)
 
             self.request.db.add(term)

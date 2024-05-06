@@ -38,7 +38,10 @@ class TermService:
         return self.session.query(Term).filter_by(id=id).one_or_none()
 
     def get_by_year(self, year):
-        return self.session.query(Term).filter(year=year).all()
+        return self.session.query(Term).filter_by(year=year).all()
+
+    def get_all(self):
+        return self.session.query(Term).order_by(Term.year.asc(), Term.number.asc()).all()
 
 
 def term_factory(_context, request):
