@@ -167,3 +167,6 @@ def includeme(config):  # pragma: no cover
     config.register_service_factory(
         "h.services.course.course_factory", iface=CourseService, name="course"
     )
+    config.register_service_factory(
+        "h.services.plan.plan_factory", name="plan"
+    )

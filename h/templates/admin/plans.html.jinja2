@@ -1,0 +1,93 @@
+{% extends "h:templates/layouts/admin.html.jinja2" %}
+
+{% from '../includes/search_form.html.jinja2' import search_form %}
+
+{% set page_id = 'plans' %}
+{% set page_title = 'Plans' %}
+
+{% block content %}
+
+  <form class="search-form">
+    <input type="search"
+          name="q"
+          class="form-input__input search-form__submit-btn"
+          value="{{ request.params.get('q') or '' }}"
+          placeholder="Id">
+    <input type="search"
+          name="name"
+          hidden
+          class="form-input__input search-form__submit-btn"
+          value="{{ value or '' }}"
+          placeholder="display name">
+    <input type="search"
+          name="term"
+          class="form-input__input search-form__submit-btn"
+          value="{{ request.params.get('term') or '' }}"
+          placeholder="term number">
+    <button class="btn search-form__submit-btn">{% trans %}Search{% endtrans %}</button>
+    <a href="{{ request.route_url('admin.plans') }}">
+      <button type="button"class="btn btn--back">Remove filter</button>
+    </a>
+  </form>
+  <div class="table-responsive">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>No.</th>
+          <th>Id</th>
+          <th>Display Name</th>
+          <th>Course</th>
+          <th>Course Memeo</th>
+          <th>Term</th>
+          <th>Location</th>
+          <th>Level</th>
+          <th>From</th>
+          <th>To</th>
+          <th>Memeo</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for org in results %}
+          <tr>
+            <td>
+              {% set edit_url = request.route_url('admin.plans_edit', id=org.id) %}
+              <a href="{{ edit_url }}">{{ loop.index }}</a>
+            </td>
+            <td>
+              <a href="{{ edit_url }}">{{ org.code_id }}</a>
+            </td>
+            <td>
+              <a href="{{ edit_url }}">{{ org.name }}</a>
+            </td>
+            <td>
+              <a href="{{ edit_url }}">{{ org.code.code }}</a>
+            </td>
+            <td>
+              <a href="{{ edit_url }}">{{ org.code.memeo }}</a>
+            </td>
+            <td>
+              <a href="{{ edit_url }}">{{ org.term.name }} {{ org.term.number }} ({{ org.term.year }})</a>
+            </td>
+            <td>
+              <a href="{{ edit_url }}">{{ org.location.name }}</a>
+            </td>
+            <td>
+              <a href="{{ edit_url }}">{{ org.level.name }}</a>
+            </td>
+            <td>
+              <a href="{{ edit_url }}">{{ org.start_time }}</a>
+            </td>
+            <td>
+              <a href="{{ edit_url }}">{{ org.end_time }}</a>
+            </td>
+            <td>
+              <a href="{{ edit_url }}">{{ org.memeo }}</a>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  {% include "h:templates/includes/paginator.html.jinja2" %}
+{% endblock %}

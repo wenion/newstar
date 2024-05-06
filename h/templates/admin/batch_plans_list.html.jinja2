@@ -1,0 +1,55 @@
+{% extends "h:templates/layouts/admin.html.jinja2" %}
+
+{% from '../includes/search_form.html.jinja2' import search_form %}
+
+{% set page_id = 'batch_plans_list' %}
+{% set page_title = 'Batch Plans List' %}
+
+{% block content %}
+
+  <div class="table-responsive">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>No.</th>
+          <th>Id</th>
+          <th>Display Name</th>
+          <th>Course code</th>
+          <th>Course Memeo</th>
+          <th>Number</th>
+          <th>Term</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for org in results %}
+          <tr>
+            <td>
+              {% set edit_url = request.route_url('admin.plans', _query={'q': org.code_id, }) %}
+              <a href="{{ edit_url }}">{{ loop.index }}</a>
+            </td>
+            <td>
+              <a href="{{ edit_url }}">{{ org.code_id }}</a>
+            </td>
+            <td>
+              <a href="{{ edit_url }}">{{ org.name }}</a>
+            </td>
+            <td>
+              <a href="{{ edit_url }}">{{ org.code }}</a>
+            </td>
+            <td>
+              <a href="{{ edit_url }}">{{ org.memeo }}</a>
+            </td>
+            <td>
+              <a href="{{ edit_url }}">{{ org[4] }}</a>
+            </td>
+            <td>
+              <a href="{{ edit_url }}">Term {{ org.number }}</a>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  {% include "h:templates/includes/paginator.html.jinja2" %}
+{% endblock %}
