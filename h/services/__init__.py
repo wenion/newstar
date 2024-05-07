@@ -170,3 +170,9 @@ def includeme(config):  # pragma: no cover
     config.register_service_factory(
         "h.services.plan.plan_factory", name="plan"
     )
+    config.register_service_factory(
+        "h.services.registration.registration_term_option_factory", name="registration_term_option"
+    )
+    config.register_service_factory(
+        "h.services.registration.registration_source_option_factory", name="registration_source_option"
+    )

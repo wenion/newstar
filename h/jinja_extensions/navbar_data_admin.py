@@ -155,7 +155,18 @@ _ADMIN_MENU = [
         "children": [
             {"route": "admin.batch_plans", "title": "List batch plans"},
             {"route": "admin.plans", "title": "List plans"},
-            {"route": "admin.plans_create", "title": "Create a plans"},
+            {"route": "admin.plans_create", "title": "Create a plan"},
+        ],
+    },
+    {
+        "id": "registration",
+        "permission": Permission.AdminPage.LOW_RISK,
+        "title": "Registration",
+        "children": [
+            {"route": "admin.registration_term_options", "title": "List term options"},
+            {"route": "admin.registration_term_options_create", "title": "Create a term option"},
+            {"route": "admin.registration_source_options", "title": "List source options"},
+            {"route": "admin.registration_source_options_create", "title": "Create a source"},
         ],
     },
 ]

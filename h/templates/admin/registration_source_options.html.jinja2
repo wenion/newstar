@@ -1,0 +1,37 @@
+{% extends "h:templates/layouts/admin.html.jinja2" %}
+
+{% set page_id = 'registration_source_options' %}
+{% set page_title = 'Registration source Options' %}
+
+{% block content %}
+
+  <div class="table-responsive">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Id</th>
+          <th>Name</th>
+          <th>Chinese</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for org in results %}
+          <tr>
+            <td>
+              {% set edit_url = request.route_url('admin.registration_source_options_edit', id=org.id) %}
+              <a href="{{ edit_url }}">{{ org.id }}</a>
+            </td>
+            <td>
+              <a href="{{ edit_url }}">{{ org.name }}</a>
+            </td>
+            <td>
+              <a href="{{ edit_url }}">{{ org.chinese }}</a>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  {% include "h:templates/includes/paginator.html.jinja2" %}
+{% endblock %}

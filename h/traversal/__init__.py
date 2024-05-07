@@ -69,6 +69,8 @@ from h.traversal.level import LevelContext, LevelRoot
 from h.traversal.term import TermContext, TermRoot
 from h.traversal.course import CourseContext, CourseRoot
 from h.traversal.plan import PlanContext, PlanRoot
+from h.traversal.registration import RegistrationTermOptionContext, RegistrationTermOptionRoot
+from h.traversal.registration import RegistrationSourceOptionContext, RegistrationSourceOptionRoot
 
 __all__ = (
     "AnnotationContext",
@@ -90,5 +92,9 @@ __all__ = (
     "CourseContext",
     "CourseRoot",
     "PlanContext",
-    "PlanRoot"
+    "PlanRoot",
+    "RegistrationTermOptionContext",
+    "RegistrationTermOptionRoot",
+    "RegistrationSourceOptionContext",
+    "RegistrationSourceOptionRoot",
 )
