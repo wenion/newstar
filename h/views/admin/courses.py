@@ -1,10 +1,13 @@
 from markupsafe import Markup
 from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config, view_defaults
-from sqlalchemy import func, case
+from sqlalchemy import func, case, String
 
 from h import form, i18n, models, paginator
 from h.models.course import Course
+from h.models.level import Level
+from h.models.location import Location
+from h.models.plan import Plan
 from h.schemas.forms.admin.course import CourseSchema, CourseEditSchema
 from h.security import Permission
 
@@ -45,8 +48,22 @@ def index(_context, request):
         filter_terms.append(func.lower(Course.code).like(f"%{q_param.lower()}%"))
 
     return (
-        request.db.query(Course)
+        request.db.query(Course.id,
+                         Course.year,
+                         Location.name,
+                         Course.day,
+                         Course.time,
+                         Level.name,
+                         Course.code,
+                         Course.memeo,
+                         func.string_agg(Plan.id.cast(String), ', ').label('plan_ids'),
+                         func.string_agg(Plan.name, ', ').label('plan_names')
+                         )
         .filter(*filter_terms)
+        .outerjoin(Plan, Plan.code_id == Course.id)
+        .outerjoin(Location, Location.id == Course.location_id)
+        .outerjoin(Level, Level.id == Course.level_id)
+        .group_by(Course.id, Course.year, Location.name, Course.day, Course.time, Level.name, Course.code, Course.memeo)
         .order_by(Course.year.asc(), Course.location_id.asc(), Course.level_id.asc(), case_statement, Course.time.asc(), Course.code.asc())
     )
 

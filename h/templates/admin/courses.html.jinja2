@@ -20,6 +20,7 @@
           <th>Level</th>
           <th>Class code</th>
           <th>Memeo</th>
+          <th>Plan</th>
         </tr>
       </thead>
       <tbody>
@@ -30,7 +31,7 @@
               <a href="{{ edit_url }}">{{ org.year }}</a>
             </td>
             <td>
-              <a href="{{ edit_url }}">{{ org.location.name }}</a>
+              <a href="{{ edit_url }}">{{ org[2] }}</a>
             </td>
             <td>
               <a href="{{ edit_url }}">{{ org.day }}</a>
@@ -39,13 +40,18 @@
               <a href="{{ edit_url }}">{{ org.time }}</a>
             </td>
             <td>
-              <a href="{{ edit_url }}">{{ org.level.name }}</a>
+              <a href="{{ edit_url }}">{{ org[5] }}</a>
             </td>
             <td>
               <a href="{{ edit_url }}">{{ org.code }}</a>
             </td>
             <td>
               <a href="{{ edit_url }}">{{ org.memeo }}</a>
+            </td>
+            <td>
+              {% if org.plan_ids %}
+                  <a href="{{ request.route_url('admin.batch_plans_list', course_id=org[0]) }}">Link ->{{ org.id }}</a>
+              {% endif %}
             </td>
           </tr>
         {% endfor %}
