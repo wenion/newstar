@@ -1,3 +1,5 @@
+from sqlalchemy import func, cast, String
+
 from h.models import RegistrationTermOption, RegistrationSourceOption, Registration
 
 
@@ -31,6 +33,14 @@ class RegistrationService:
 
     def get_by_id(self, id):
         return self.session.query(Registration).filter_by(id=id).one_or_none()
+
+    def get_list(self):
+        combined_name_day = func.concat(
+            Registration.last_name, ' ',
+            Registration.first_name, ', ',
+            Registration.email)
+        return self.session.query(cast(func.min(Registration.id), String), combined_name_day) \
+                .group_by(Registration.last_name, Registration.first_name, Registration.email).all()
 
 
 def registration_term_option_factory(_context, request):

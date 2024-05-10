@@ -1,8 +1,11 @@
-import sqlalchemy as sa
+from sqlalchemy import func, cast, String
 
 from h.models import User, UserIdentity
 from h.util.db import on_transaction_end
 from h.util.user import split_user
+
+import sqlalchemy as sa
+
 
 UPDATE_PREFS_ALLOWED_KEYS = {"show_sidebar_tutorial"}
 
@@ -162,6 +165,11 @@ class UserService:
             raise UserNotActivated()
 
         return user
+
+    def get_list(self):
+        combined_name_day = func.concat(User.username, ' ', User.email)
+        return self.session.query(cast(func.min(User.id), String), combined_name_day) \
+                .group_by(User.username, User.email).all()
 
     @staticmethod
     def update_preferences(user, **kwargs):

@@ -159,9 +159,9 @@ _ADMIN_MENU = [
         ],
     },
     {
-        "id": "registration",
+        "id": "registrations",
         "permission": Permission.AdminPage.LOW_RISK,
-        "title": "Registration",
+        "title": "Registrations",
         "children": [
             {"route": "admin.registration_term_options", "title": "List term options"},
             {"route": "admin.registration_term_options_create", "title": "Create a term option"},
@@ -169,6 +169,15 @@ _ADMIN_MENU = [
             {"route": "admin.registration_source_options_create", "title": "Create a source"},
             {"route": "admin.registrations", "title": "List registrations"},
             {"route": "admin.registrations_create", "title": "Create a registration"},
+        ],
+    },
+    {
+        "id": "profiles",
+        "permission": Permission.AdminPage.LOW_RISK,
+        "title": "Profiles",
+        "children": [
+            {"route": "admin.profiles", "title": "List profiles"},
+            {"route": "admin.profiles_create", "title": "Create a profile"},
         ],
     },
 ]

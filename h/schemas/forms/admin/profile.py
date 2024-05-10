@@ -15,32 +15,27 @@ def registration_gender_select_widget(_node, kwargs):
 
 
 @colander.deferred
-def registration_code_select_widget(_node, kwargs):
-    return SelectWidget(values=kwargs['code'])
+def profile_registration_select_widget(_node, kwargs):
+    return SelectWidget(values=[('', 'Select registration'),] + kwargs['registration'])
 
 
 @colander.deferred
-def registration_level_select_widget(_node, kwargs):
-    return SelectWidget(values=kwargs['level'])
+def profile_select_widget(_node, kwargs):
+    return SelectWidget(values=[('', 'Select account'),] + kwargs['profile'])
 
 
 @colander.deferred
-def registration_term_select_widget(_node, kwargs):
-    return SelectWidget(values=kwargs['term'])
+def profile_user_select_widget(_node, kwargs):
+    return SelectWidget(values=[('', 'Select account'),] + kwargs['user'])
 
 
-@colander.deferred
-def registration_source_select_widget(_node, kwargs):
-    return SelectWidget(values=kwargs['source'])
+class ProfileSchema(CSRFSchema):
+    number = colander.SchemaNode(
+        colander.String(),
+        title=_("No."),
+        widget=TextInputWidget(),
+    )
 
-
-class RegistrationOptionSchema(CSRFSchema):
-    name = colander.SchemaNode(colander.String(), title=_("Name"))
-
-    chinese = colander.SchemaNode(colander.String(), title=_("Chinese"))
-
-
-class RegistrationSchema(CSRFSchema):
     last_name = colander.SchemaNode(colander.String(), title=_("Given name"))
     first_name = colander.SchemaNode(colander.String(), title=_("Family name"))
     date_of_birth = colander.SchemaNode(
@@ -54,24 +49,6 @@ class RegistrationSchema(CSRFSchema):
         colander.String(),
         title=_("Gender"),
         widget=registration_gender_select_widget,
-    )
-
-    code = colander.SchemaNode(
-        colander.String(),
-        title=_("Class Location & Time"),
-        widget=registration_code_select_widget,
-    )
-
-    level = colander.SchemaNode(
-        colander.String(),
-        title=_("Class Level"),
-        widget=registration_level_select_widget,
-    )
-
-    term = colander.SchemaNode(
-        colander.String(),
-        title=_("Length Options (discounts applies to payments for more than 2 full terms)"),
-        widget=registration_term_select_widget,
     )
 
     email = colander.SchemaNode(
@@ -108,17 +85,31 @@ class RegistrationSchema(CSRFSchema):
         missing=""
     )
 
-    source = colander.SchemaNode(
+    phone = colander.SchemaNode(
         colander.String(),
-        title=_("How did you find us?"),
-        widget=registration_source_select_widget,
+        title=_("Phone"),
+        widget=TextInputWidget(),
+        missing=""
+    )
+
+    registration = colander.SchemaNode(
+        colander.String(),
+        title=_("Enroll Information"),
+        widget=profile_registration_select_widget,
     )
 
     referer = colander.SchemaNode(
         colander.String(),
-        title=_("Referral person (Existing student number or parent contact)"),
-        widget=TextInputWidget(),
-        missing=""
+        title=_("Referral person"),
+        widget=profile_select_widget,
+        missing=None
+    )
+
+    user = colander.SchemaNode(
+        colander.String(),
+        title=_("Account"),
+        widget=profile_user_select_widget,
+        missing=None
     )
 
     memeo = colander.SchemaNode(

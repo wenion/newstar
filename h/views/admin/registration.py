@@ -414,7 +414,7 @@ class RegistrationCreateController:
             self.request.db.add(opt)
             self.request.session.flash(
                 # pylint:disable=consider-using-f-string
-                Markup(_("Created new registeration {}".format(last_name))),
+                Markup(_("Created new registration {}".format(last_name))),
                 "success",
             )
 
@@ -478,7 +478,7 @@ class RegistrationEditController:
         self.request.session.flash(
             _(
                 # pylint:disable=consider-using-f-string
-                "Successfully deleted registeration %s" % (self.opt.last_name),
+                "Successfully deleted registration %s" % (self.opt.last_name),
                 "success",
             )
         )

@@ -47,6 +47,7 @@ from h.models.plan import Plan
 from h.models.registration import RegistrationTermOption
 from h.models.registration import RegistrationSourceOption
 from h.models.registration import Registration
+from h.models.profile import Profile
 
 __all__ = (
     "Activation",
@@ -81,4 +82,5 @@ __all__ = (
     "RegistrationTermOption",
     "RegistrationSourceOption",
     "Registration",
+    "Profile",
 )
