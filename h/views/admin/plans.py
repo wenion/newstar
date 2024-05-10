@@ -104,7 +104,6 @@ class PlanCreateController:
     @view_config(request_method="POST")
     def post(self):
         def on_success(appstruct):
-            print('appstruct', appstruct)
             name = appstruct["name"]
             course_id = appstruct["code_id"]
             term_id = appstruct["term_id"]
