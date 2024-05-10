@@ -4,6 +4,7 @@ from deform.widget import TextInputWidget, SelectWidget
 
 import h.i18n
 from h.schemas.base import CSRFSchema
+from h.schemas.forms.widgets import TimeInputWidget
 
 _ = h.i18n.TranslationString
 
@@ -46,11 +47,16 @@ class CourseSchema(CSRFSchema):
         widget=course_day_select_widget,
     )
 
-    time = colander.SchemaNode(
-        colander.String(),
-        title=_("Time"),
-        validator=time_validator,
-        widget=TextInputWidget()
+    start_time = colander.SchemaNode(
+        colander.Time(),
+        title=_("Time From"),
+        widget=TimeInputWidget()
+    )
+
+    end_time = colander.SchemaNode(
+        colander.Time(),
+        title=_("Time To"),
+        widget=TimeInputWidget()
     )
 
     level_id = colander.SchemaNode(
@@ -93,11 +99,16 @@ class CourseEditSchema(CSRFSchema):
         widget=course_day_select_widget,
     )
 
-    time = colander.SchemaNode(
-        colander.String(),
-        title=_("Time"),
-        validator=time_validator,
-        widget=TextInputWidget()
+    start_time = colander.SchemaNode(
+        colander.Time(),
+        title=_("Time From"),
+        widget=TimeInputWidget()
+    )
+
+    end_time = colander.SchemaNode(
+        colander.Time(),
+        title=_("Time To"),
+        widget=TimeInputWidget()
     )
 
     level_id = colander.SchemaNode(

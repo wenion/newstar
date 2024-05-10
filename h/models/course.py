@@ -15,7 +15,8 @@ class Course(Base, mixins.Timestamps):
 
     day = sa.Column(sa.UnicodeText(), nullable=True)
 
-    time = sa.Column(sa.UnicodeText(), nullable=True)
+    start_time = sa.Column(sa.Time, nullable=True)
+    end_time = sa.Column(sa.Time, nullable=True)
 
     level_id = sa.Column(sa.Integer, sa.ForeignKey("level.id"), nullable=True)
     level = sa.orm.relationship("Level", backref="course")

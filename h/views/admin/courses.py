@@ -52,7 +52,8 @@ def index(_context, request):
                          Course.year,
                          Location.name,
                          Course.day,
-                         Course.time,
+                         Course.start_time,
+                         Course.end_time,
                          Level.name,
                          Course.code,
                          Course.memeo,
@@ -63,8 +64,8 @@ def index(_context, request):
         .outerjoin(Plan, Plan.code_id == Course.id)
         .outerjoin(Location, Location.id == Course.location_id)
         .outerjoin(Level, Level.id == Course.level_id)
-        .group_by(Course.id, Course.year, Location.name, Course.day, Course.time, Level.name, Course.code, Course.memeo)
-        .order_by(Course.year.asc(), Course.location_id.asc(), Course.level_id.asc(), case_statement, Course.time.asc(), Course.code.asc())
+        .group_by(Course.id, Course.year, Location.name, Course.day, Course.start_time, Course.end_time, Level.name, Course.code, Course.memeo)
+        .order_by(Course.year.asc(), Course.location_id.asc(), Course.level_id.asc(), case_statement, Course.start_time.asc(), Course.code.asc())
     )
 
 
@@ -94,15 +95,16 @@ class CourseCreateController:
             year = appstruct["year"]
             location_id = appstruct["location_id"]
             day = appstruct["day"]
-            time = appstruct["time"]
+            start_time = appstruct["start_time"]
+            end_time = appstruct["end_time"]
             level_id = appstruct["level_id"]
             memeo = appstruct["memeo"]
 
             location = self.request.find_service(name="location").get_by_id(location_id)
             level = self.request.find_service(name="level").get_by_id(level_id)
-            code = location.abbreviation + day + time + level.abbreviation
+            code = location.abbreviation + day + start_time.strftime('%H%M') + level.abbreviation
 
-            course = Course(year=year, location=location, day=day, time=time, level=level, code=code, memeo=memeo)
+            course = Course(year=year, location=location, day=day, start_time=start_time, end_time=end_time, level=level, code=code, memeo=memeo)
 
             self.request.db.add(course)
             self.request.session.flash(
@@ -186,7 +188,8 @@ class CourseEditController:
             org.year = appstruct["year"]
             org.location_id = appstruct["location_id"]
             org.day = appstruct["day"]
-            org.time = appstruct["time"]
+            org.start_time = appstruct["start_time"]
+            org.end_time = appstruct["end_time"]
             org.level_id = appstruct["level_id"]
             org.code = appstruct["code"]
             org.memeo = appstruct["memeo"]
@@ -209,7 +212,8 @@ class CourseEditController:
                 "year": org.year,
                 "location_id": org.location_id,
                 "day": org.day,
-                "time": org.time,
+                "start_time": org.start_time,
+                "end_time": org.end_time,
                 "level_id": org.level_id,
                 "code": org.code,
                 "memeo": org.memeo,

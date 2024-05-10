@@ -35,11 +35,14 @@ day_order = {
 def get_course_options(request):
     case_replacement_statement = case(day_replacements, value=Course.day, else_='')
     case_order_statement = case(day_order, value=Course.day,else_=0)
-    combined_name_day = func.concat(Location.name, ' - ', case_replacement_statement, ' - ', Course.time)
+    combined_name_day = func.concat(
+        Location.name, ': ',
+        case_replacement_statement, ', ',
+        Course.start_time, ' - ', Course.end_time)
 
     return request.db.query(cast(func.min(Course.id), String), combined_name_day) \
         .join(Location, Location.id == Course.location_id) \
-        .group_by(Location.name, Course.day, Course.time) \
+        .group_by(Location.name, Course.day, Course.start_time, Course.end_time) \
         .order_by(Location.name.asc(), case_order_statement).all()
 
 

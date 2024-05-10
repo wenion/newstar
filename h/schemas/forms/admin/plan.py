@@ -1,8 +1,8 @@
 import colander
+from deform.widget import TextInputWidget, SelectWidget, OptGroup
 
 import h.i18n
 from h.schemas.base import CSRFSchema
-from deform.widget import TextInputWidget, SelectWidget, OptGroup
 from h.schemas.forms.widgets import TimeInputWidget, DateTimeInputWidget
 
 
