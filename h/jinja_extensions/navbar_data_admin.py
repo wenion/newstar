@@ -167,6 +167,8 @@ _ADMIN_MENU = [
             {"route": "admin.registration_term_options_create", "title": "Create a term option"},
             {"route": "admin.registration_source_options", "title": "List source options"},
             {"route": "admin.registration_source_options_create", "title": "Create a source"},
+            {"route": "admin.registrations", "title": "List registrations"},
+            {"route": "admin.registrations_create", "title": "Create a registration"},
         ],
     },
 ]

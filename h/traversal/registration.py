@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from h.models import RegistrationTermOption, RegistrationSourceOption
+from h.models import RegistrationTermOption, RegistrationSourceOption, Registration
 
 
 @dataclass
@@ -47,3 +47,26 @@ class RegistrationSourceOptionRoot:
             raise KeyError()
 
         return RegistrationSourceOptionContext(opt=opt)
+
+
+@dataclass
+class RegistrationContext:
+    """Context for plan-based views."""
+
+    registration: Registration = None
+
+
+class RegistrationRoot:
+    """Root factory for routes which deal with plans."""
+
+    def __init__(self, request):
+        self.request = request
+
+    def __getitem__(self, id):
+        registration = self.request.find_service(name="registration").get_by_id(
+            id
+        )
+        if registration is None:
+            raise KeyError()
+
+        return RegistrationContext(registration=registration)
