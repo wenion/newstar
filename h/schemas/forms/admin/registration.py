@@ -16,22 +16,22 @@ def registration_gender_select_widget(_node, kwargs):
 
 @colander.deferred
 def registration_code_select_widget(_node, kwargs):
-    return SelectWidget(values=kwargs['code'])
+    return SelectWidget(values=[('', '-- Select location --'),] + kwargs['code'])
 
 
 @colander.deferred
 def registration_level_select_widget(_node, kwargs):
-    return SelectWidget(values=kwargs['level'])
+    return SelectWidget(values=[('', '-- Select level --'),] + kwargs['level'])
 
 
 @colander.deferred
 def registration_term_select_widget(_node, kwargs):
-    return SelectWidget(values=kwargs['term'])
+    return SelectWidget(values=[('', 'Select term'),] + kwargs['term'])
 
 
 @colander.deferred
 def registration_source_select_widget(_node, kwargs):
-    return SelectWidget(values=kwargs['source'])
+    return SelectWidget(values=[('', 'Select item'),] + kwargs['source'])
 
 
 class RegistrationOptionSchema(CSRFSchema):
@@ -112,6 +112,7 @@ class RegistrationSchema(CSRFSchema):
         colander.String(),
         title=_("How did you find us?"),
         widget=registration_source_select_widget,
+        missing=None
     )
 
     referer = colander.SchemaNode(

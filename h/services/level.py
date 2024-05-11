@@ -4,6 +4,7 @@ from h.models import Level
 
 import sqlalchemy as sa
 
+
 class LevelService:
     """A service for manipulating organizations."""
 
@@ -42,9 +43,6 @@ class LevelService:
 
     def get_by_name(self, name):
         return self.session.query(Level).filter(sa._or(Level.name==name, Level.abbreviation==name)).all()
-
-    def get_all(self):
-        return self.session.query(Level).all()
 
     def get_list(self):
         return self.session.query(cast(func.min(Level.id), String), Level.name).group_by(Level.name).all()

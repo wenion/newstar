@@ -11,19 +11,19 @@ _ = h.i18n.TranslationString
 # TODO validator
 @colander.deferred
 def plan_course_select_widget(_node, kwargs):
-    return SelectWidget(values=kwargs['code'])
+    return SelectWidget(values=[('', '-- Select Course --'),] + kwargs['code'])
 
 @colander.deferred
 def plan_term_select_widget(_node, kwargs):
-    return SelectWidget(values=kwargs["term"])
+    return SelectWidget(values=[('', '-- Select term --'),] + kwargs["term"])
 
 @colander.deferred
 def plan_location_select_widget(_node, kwargs):
-    return SelectWidget(values=kwargs["location"])
+    return SelectWidget(values=[('', '-- Select location --'),] + kwargs["location"])
 
 @colander.deferred
 def plan_level_select_widget(_node, kwargs):
-    return SelectWidget(values=kwargs["level"])
+    return SelectWidget(values=[('', '-- Select level --'),] + kwargs["level"])
 
 
 class PlanSchema(CSRFSchema):

@@ -76,8 +76,8 @@ def index(_context, request):
 )
 class CourseCreateController:
     def __init__(self, request):
-        location_list = [(item.id, item.name) for item in request.find_service(name='location').get_all()]
-        level_list = [(item.id, item.name) for item in request.find_service(name='level').get_all()]
+        location_list = request.find_service(name='location').get_list()
+        level_list = request.find_service(name='level').get_list()
 
         self.schema = CourseSchema().bind(request=request, location=location_list, level=level_list, day=day)
         self.request = request
@@ -133,8 +133,8 @@ class CourseCreateController:
 )
 class CourseEditController:
     def __init__(self, context, request):
-        location_list = [(str(item.id), item.name) for item in request.find_service(name='location').get_all()]
-        level_list = [(str(item.id), item.name) for item in request.find_service(name='level').get_all()]
+        location_list = request.find_service(name='location').get_list()
+        level_list = request.find_service(name='level').get_list()
 
         self.course = context.course
         self.request = request

@@ -83,12 +83,12 @@ def index(_context, request):
 )
 class PlanCreateController:
     def __init__(self, request):
-        location_list = [(str(item.id), item.abbreviation) for item in request.find_service(name='location').get_all()]
-        course_list = [(str(item.id), item.code + ("(" + item.memeo + ")" if item.memeo else '')) for item in request.find_service(name='course').get_all()]
+        location_list = request.find_service(name='location').get_list()
+        course_list = request.find_service(name='course').get_list()
         year = date.today().year
         term_list = [('0', 'All Terms({})'.format(year))]
-        term_list += [(str(item.id), item.name + str(item.number) + "(" + str(item.year) + ")") for item in request.find_service(name='term').get_all()]
-        level_list = [(str(item.id), item.name) for item in request.find_service(name='level').get_all()]
+        term_list += request.find_service(name='term').get_list()
+        level_list = request.find_service(name='level').get_list()
 
         self.year = year
         self.schema = PlanSchema().bind(request=request, code=course_list, term=term_list, location=location_list, level=level_list)
@@ -152,11 +152,10 @@ class PlanCreateController:
 )
 class PlanEditController:
     def __init__(self, context, request):
-        location_list = [(str(item.id), item.abbreviation) for item in request.find_service(name='location').get_all()]
-        course_list = [(str(item.id), item.code + ("(" + item.memeo + ")" if item.memeo else '')) for item in request.find_service(name='course').get_all()]
-
-        term_list = [(str(item.id), item.name + str(item.number) + "(" + str(item.year) + ")") for item in request.find_service(name='term').get_all()]
-        level_list = [(str(item.id), item.name) for item in request.find_service(name='level').get_all()]
+        location_list = request.find_service(name='location').get_list()
+        course_list = request.find_service(name='course').get_list()
+        term_list = request.find_service(name='term').get_list()
+        level_list = request.find_service(name='level').get_list()
 
         self.plan = context.plan
         self.request = request

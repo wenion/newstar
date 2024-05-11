@@ -11,7 +11,7 @@ _ = h.i18n.TranslationString
 # TODO validator
 @colander.deferred
 def course_location_select_widget(_node, kwargs):
-    return SelectWidget(values=kwargs["location"])
+    return SelectWidget(values=[('', '-- Select location --'),] + kwargs["location"])
 
 @colander.deferred
 def course_day_select_widget(_node, kwargs):
@@ -19,7 +19,7 @@ def course_day_select_widget(_node, kwargs):
 
 @colander.deferred
 def course_level_select_widget(_node, kwargs):
-    return SelectWidget(values=kwargs["level"])
+    return SelectWidget(values=[('', '-- Select level --'),] + kwargs["level"])
 
 def time_validator(node, value):
     try:

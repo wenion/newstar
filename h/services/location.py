@@ -1,5 +1,8 @@
-import sqlalchemy as sa
+from sqlalchemy import func, cast, String
+
 from h.models import Location
+
+import sqlalchemy as sa
 
 
 class LocationService:
@@ -41,8 +44,8 @@ class LocationService:
     def get_by_name(self, name):
         return self.session.query(Location).filter(sa._or(Location.name==name, Location.abbreviation==name)).all()
 
-    def get_all(self):
-        return self.session.query(Location).all()
+    def get_list(self):
+        return self.session.query(cast(func.min(Location.id), String), Location.name).group_by(Location.name).all()
 
 
 def location_factory(_context, request):

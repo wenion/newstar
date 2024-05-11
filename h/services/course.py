@@ -1,5 +1,11 @@
+from sqlalchemy import func, cast, case, String
+
 from h.models import Course
 
+day_order = {
+    '': Course.code,
+    None: Course.code,
+}
 
 class CourseService:
     """A service for manipulating organizations."""
@@ -26,8 +32,11 @@ class CourseService:
     def get_by_code(self, code):
         return self.session.query(Course).filter_by(code=code).one_or_none()
 
-    def get_all(self):
-        return self.session.query(Course).all()
+    def get_list(self):
+        combined_name = case(day_order, value=Course.memeo, else_= Course.code + ' (' + Course.memeo + ')')
+        return self.session.query(cast(func.min(Course.id), String), combined_name) \
+                .group_by(Course.code, Course.memeo) \
+                .order_by(Course.code).all()
 
 
 def course_factory(_context, request):

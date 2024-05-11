@@ -355,9 +355,9 @@ def registration_index(_context, request):
 )
 class RegistrationCreateController:
     def __init__(self, request):
-        level_list = [(str(item.id), item.name) for item in request.find_service(name='level').get_all()]
-        term_list = [(str(item.id), item.name) for item in request.find_service(name='registration_term_option').get_all()]
-        source_list = [(str(item.id), item.name) for item in request.find_service(name='registration_source_option').get_all()]
+        level_list = request.find_service(name='level').get_list()
+        term_list = request.find_service(name='registration_term_option').get_list()
+        source_list = request.find_service(name='registration_source_option').get_list()
 
         self.schema = RegistrationSchema().bind(request=request, code=get_course_options(request), level=level_list, term=term_list, source=source_list)
         self.request = request
@@ -438,9 +438,9 @@ class RegistrationCreateController:
 )
 class RegistrationEditController:
     def __init__(self, context, request):
-        level_list = [(str(item.id), item.name) for item in request.find_service(name='level').get_all()]
-        term_list = [(str(item.id), item.name) for item in request.find_service(name='registration_term_option').get_all()]
-        source_list = [(str(item.id), item.name) for item in request.find_service(name='registration_source_option').get_all()]
+        level_list = request.find_service(name='level').get_list()
+        term_list = request.find_service(name='registration_term_option').get_list()
+        source_list = request.find_service(name='registration_source_option').get_list()
 
         self.opt = context.registration
         self.request = request

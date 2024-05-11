@@ -11,8 +11,10 @@ class RegistrationTermOptionService:
     def get_by_id(self, id):
         return self.session.query(RegistrationTermOption).filter_by(id=id).one_or_none()
 
-    def get_all(self):
-        return self.session.query(RegistrationTermOption).all()
+    def get_list(self):
+        return self.session.query(cast(func.min(RegistrationTermOption.id), String), RegistrationTermOption.name) \
+            .group_by(RegistrationTermOption.id, RegistrationTermOption.name) \
+            .order_by(RegistrationTermOption.id.asc()).all()
 
 
 class RegistrationSourceOptionService:
@@ -23,8 +25,10 @@ class RegistrationSourceOptionService:
     def get_by_id(self, id):
         return self.session.query(RegistrationSourceOption).filter_by(id=id).one_or_none()
 
-    def get_all(self):
-        return self.session.query(RegistrationSourceOption).all()
+    def get_list(self):
+        return self.session.query(cast(func.min(RegistrationSourceOption.id), String), RegistrationSourceOption.name) \
+            .group_by(RegistrationSourceOption.id, RegistrationSourceOption.name)\
+            .order_by(RegistrationSourceOption.id.asc()).all()
 
 
 class RegistrationService:
@@ -35,11 +39,11 @@ class RegistrationService:
         return self.session.query(Registration).filter_by(id=id).one_or_none()
 
     def get_list(self):
-        combined_name_day = func.concat(
+        combined_name = func.concat(
             Registration.last_name, ' ',
             Registration.first_name, ', ',
             Registration.email)
-        return self.session.query(cast(func.min(Registration.id), String), combined_name_day) \
+        return self.session.query(cast(func.min(Registration.id), String), combined_name) \
                 .group_by(Registration.last_name, Registration.first_name, Registration.email).all()
 
 
