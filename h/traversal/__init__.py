@@ -73,6 +73,7 @@ from h.traversal.registration import RegistrationTermOptionContext, Registration
 from h.traversal.registration import RegistrationSourceOptionContext, RegistrationSourceOptionRoot
 from h.traversal.registration import RegistrationContext, RegistrationRoot
 from h.traversal.profile import ProfileContext, ProfileRoot
+from h.traversal.item import CostItemContext, CostItemRoot
 
 __all__ = (
     "AnnotationContext",
@@ -103,4 +104,6 @@ __all__ = (
     "RegistrationRoot",
     "ProfileContext",
     "ProfileRoot",
+    "CostItemContext",
+    "CostItemRoot",
 )

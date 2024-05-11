@@ -182,3 +182,6 @@ def includeme(config):  # pragma: no cover
     config.register_service_factory(
         "h.services.profile.profile_factory", name="profile"
     )
+    config.register_service_factory(
+        "h.services.item.cost_item_factory", name="cost_item"
+    )

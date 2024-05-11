@@ -180,4 +180,13 @@ _ADMIN_MENU = [
             {"route": "admin.profiles_create", "title": "Create a profile"},
         ],
     },
+    {
+        "id": "items",
+        "permission": Permission.AdminPage.LOW_RISK,
+        "title": "Items",
+        "children": [
+            {"route": "admin.cost_items", "title": "List items"},
+            {"route": "admin.cost_items_create", "title": "Create an item"},
+        ],
+    },
 ]

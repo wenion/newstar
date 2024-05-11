@@ -1,3 +1,5 @@
+from sqlalchemy import func, cast, String
+
 from h.models import Term
 
 
@@ -42,6 +44,11 @@ class TermService:
 
     def get_all(self):
         return self.session.query(Term).order_by(Term.year.asc(), Term.number.asc()).all()
+
+    def get_list(self):
+        combined_name = func.concat(Term.name, Term.number, ' (', Term.year, ')')
+        return self.session.query(cast(func.min(Term.id), String), combined_name) \
+                .group_by(Term.name, Term.number, Term.year).all()
 
 
 def term_factory(_context, request):

@@ -1,0 +1,53 @@
+{% extends "h:templates/layouts/admin.html.jinja2" %}
+
+{% from '../includes/search_form.html.jinja2' import search_form %}
+
+{% set page_id = 'cost_items' %}
+{% set page_title = 'Cost items' %}
+
+{% block content %}
+
+  {{ search_form('Search by name', request.params.get('q')) }}
+
+  <div class="table-responsive">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Id</th>
+          <th>No.</th>
+          <th>Name</th>
+          <th>Current Price</th>
+          <th>GST included</th>
+          <th>Comments</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for org in results %}
+          <tr>
+            <td>
+              {% set edit_url = request.route_url('admin.cost_items_edit', id=org.id) %}
+              <a href="{{ edit_url }}">{{ org.id }}</a>
+            </td>
+            <td>
+              <a href="{{ edit_url }}">{{ org.number }}</a>
+            </td>
+            <td>
+              <a href="{{ edit_url }}">{{ org.name }}</a>
+            </td>
+            <td>
+              <a href="{{ edit_url }}">{{ org.price }}</a>
+            </td>
+            <td>
+              <a href="{{ edit_url }}">{{ org.gst_included }}</a>
+            </td>
+            <td>
+              <a href="{{ edit_url }}">{{ org.comments }}</a>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  {% include "h:templates/includes/paginator.html.jinja2" %}
+{% endblock %}

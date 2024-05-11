@@ -214,6 +214,21 @@ def includeme(config):  # pylint: disable=too-many-statements
         traverse="/{id}",
     )
 
+    config.add_route("admin.cost_items", "/admin/items")
+    config.add_route("admin.cost_items_create", "/admin/items/new")
+    config.add_route(
+        "admin.cost_items_delete",
+        "/admin/items/delete/{id}",
+        factory="h.traversal.CostItemRoot",
+        traverse="/{id}",
+    )
+    config.add_route(
+        "admin.cost_items_edit",
+        "/admin/items/{id}",
+        factory="h.traversal.CostItemRoot",
+        traverse="/{id}",
+    )
+
     # Annotations & stream
     config.add_route(
         "annotation", "/a/{id}", factory="h.traversal:AnnotationRoot", traverse="/{id}"

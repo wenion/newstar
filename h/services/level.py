@@ -1,6 +1,8 @@
-import sqlalchemy as sa
+from sqlalchemy import func, cast, String
+
 from h.models import Level
 
+import sqlalchemy as sa
 
 class LevelService:
     """A service for manipulating organizations."""
@@ -43,6 +45,9 @@ class LevelService:
 
     def get_all(self):
         return self.session.query(Level).all()
+
+    def get_list(self):
+        return self.session.query(cast(func.min(Level.id), String), Level.name).group_by(Level.name).all()
 
 
 def level_factory(_context, request):
