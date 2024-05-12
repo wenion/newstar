@@ -11,7 +11,7 @@ _ = h.i18n.TranslationString
 # TODO validator
 @colander.deferred
 def registration_gender_select_widget(_node, kwargs):
-    return SelectWidget(values=(('', 'Select gender'), ('Male', 'Male'), ('Female', 'Female')),)
+    return SelectWidget(values=(('', '-- Select gender --'), ('Male', 'Male'), ('Female', 'Female')),)
 
 
 @colander.deferred
@@ -26,12 +26,12 @@ def registration_level_select_widget(_node, kwargs):
 
 @colander.deferred
 def registration_term_select_widget(_node, kwargs):
-    return SelectWidget(values=[('', 'Select term'),] + kwargs['term'])
+    return SelectWidget(values=[('', '-- Select term --'),] + kwargs['term'])
 
 
 @colander.deferred
 def registration_source_select_widget(_node, kwargs):
-    return SelectWidget(values=[('', 'Select item'),] + kwargs['source'])
+    return SelectWidget(values=[('', '-- Select item --'),] + kwargs['source'])
 
 
 class RegistrationOptionSchema(CSRFSchema):

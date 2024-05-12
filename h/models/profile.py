@@ -33,4 +33,4 @@ class Profile(Base, mixins.Timestamps):
     user = sa.orm.relationship("User", backref="profile", foreign_keys=[user_id])
 
     def __repr__(self):
-        return f"<Plan: {str(self.id) + ' ' + self.number + ' ' + self.first_name}>"
+        return f"<Profile: {str(self.id) + ' ' + self.number + ' ' + self.first_name}>"

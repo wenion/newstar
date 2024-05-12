@@ -9,12 +9,12 @@ _ = h.i18n.TranslationString
 # TODO validator
 @colander.deferred
 def item_level_select_widget(_node, kwargs):
-    return SelectWidget(values=[('', 'Select level'),] + kwargs['level'])
+    return SelectWidget(values=[('', '-- Select level --'),] + kwargs['level'])
 
 
 @colander.deferred
 def item_term_select_widget(_node, kwargs):
-    return SelectWidget(values=[('', 'Select term'),] + kwargs['term'])
+    return SelectWidget(values=[('', '-- Select term --'),] + kwargs['term'])
 
 
 class CostItemCreateSchema(CSRFSchema):
