@@ -1,0 +1,58 @@
+{% extends "h:templates/layouts/admin.html.jinja2" %}
+
+{% set page_id = 'registrations' %}
+{% set page_title = 'Registrations' %}
+
+{% block content %}
+
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h4 class="panel-title">Basic</h4>
+    </div>
+    <div class="panel-body">
+      <table class="table table-auto table-striped">
+        <tbody>
+          <tr>
+            <th>Given Name</th>
+            <th>Family Name</th>
+            <th>Date of birth</th>
+            <th>Gender</th>
+          </tr>
+          <tr>
+            <td>{{ last_name }}</td>
+            <td>{{ first_name }}</td>
+            <td>{{ date_of_birth.date() }}</td>
+            <td>{{ gender }}</td>
+          </tr>
+        </tbody>
+      </table>
+      <hr>
+      <table class="table table-auto table-striped">
+        <tbody>
+          <tr>
+            <th>Phone</th>
+            <th>Email</th>
+            <th>Wechat</th>
+            <th>Emergency Contact</th>
+            <th>Parent 1 Phone No.</th>
+            <th>Parent 2 Phone No.</th>
+          </tr>
+          <tr>
+            <td>{{ phone }}</td>
+            <td>{{ email }}</td>
+            <td>{{ wechat }}</td>
+            <td>{{ emergency_contact }}</td>
+            <td>{{ first_emergency_contact }}</td>
+            <td>{{ second_emergency_contact }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <h3>Select relative profile</h3>
+  {{ form }}
+
+  <a href="{{ request.route_path('admin.profiles_create_from_registration', registration_id=registration_id) }}">don't find a Profile? Create -></a>
+
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends "h:templates/layouts/admin.html.jinja2" %}
+
+{% set page_id = 'profiles_new' %}
+{% set page_title = 'Create profile' %}
+
+{% block content %}
+
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h4 class="panel-title">Registration</h4>
+    </div>
+    <div class="panel-body">
+      <table class="table table-auto table-striped">
+        <tbody>
+          <tr>
+            <th>Memeo</th>
+            <th>referer</th>
+            <th>Privacy accepted</th>
+          </tr>
+          <tr>
+            <td>{{ memeo }}</td>
+            <td>{{ referer }}</td>
+            <td>{{ privacy_accepted }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {{ form }}
+  <a href="{{ request.route_path('admin.users_create') }}">don't find? Create -></a>
+  <div class="panel-body">
+    <table class="table table-auto table-striped">
+      <tbody>
+        <tr>
+          <th>Memeo</th>
+          <th>referer</th>
+        </tr>
+        <tr>
+          <td>{{ memeo }}</td>
+          <td>{{ referer }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+{% endblock %}

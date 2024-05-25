@@ -1,0 +1,39 @@
+{% extends "h:templates/layouts/admin.html.jinja2" %}
+
+{% set page_id = 'users' %}
+{% set page_title = 'Account' %}
+
+{% block content %}
+  <div class="form-container content">
+    {% include "h:templates/includes/flash-messages.html.jinja2" %}
+
+    <h1 class="form-header">
+      {% block page_title %}{% endblock %}
+    </h1>
+
+    {% if form_message %}
+      <div class="form-description">{{ form_message }}</div>
+    {% endif %}
+
+    {% if form %}{{ form }}{% endif %}
+
+    {% if not form %}
+      {% if message %}<p>{{ message }}</p>{% endif %}
+
+      <p>Please double-check email is validated.</p>
+      <a href="">support@hypothes.is</a>
+    {% endif %}
+
+    <footer class="form-footer">
+      {% block form_footer %}{% endblock %}
+      {% if signup_message %}
+        {{ signup_message }}
+        <a class="link--footer" href="{{ request.route_path('signup') }}">Sign up</a>
+      {% endif %}
+      {% if login_message %}
+        {{ login_message }}
+        <a class="link--footer" href="{{ request.route_path('login') }}">Log in</a>
+      {% endif %}
+    </footer>
+  </div>
+{% endblock content %}

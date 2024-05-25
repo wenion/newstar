@@ -1,0 +1,71 @@
+{% extends "h:templates/layouts/admin.html.jinja2" %}
+
+{% set page_id = 'users' %}
+{% set page_title = 'Users' %}
+
+{% block content %}
+  <p>
+    On this page you can look up users by username and see their details.
+  </p>
+
+  <form method="GET" class="form-inline">
+    <div class="form-group">
+      <label for="username">Username or email</label>
+      <input type="text" minlength="3" class="form-control" name="username">
+      <input type="submit" class="btn btn-default" value="Find">
+    </div>
+  </form>
+  <hr>
+    {% if users %}
+      <table class="table table-auto table-striped">
+        <thead>
+          <tr>
+            <th>Username</th>
+            <th>Authority</th>
+            <th>Email</th>
+            <th>Registered</th>
+            <th>Last login</th>
+            <th>Is activated?</th>
+            <th>Is admin?</th>
+            <th>Is staff?</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for user in users %}
+            <tr>
+              <td>
+                <a href="{{ request.route_url('admin.users', _query={'username':user.username , 'authority':user.authority }) }}">{{ user.username }}</a>
+              </td>
+              <td>{{ user.authority }}</td>
+              <td>{{ user.email }}</td>
+              <td>{{ format_date(user.registered_date) }}</td>
+              <td>{{ format_date(user.last_login_date) }}</td>
+              <td>
+                {% if user.is_activated %}
+                  &#x2714;
+                  {% if user.activation_date %}({{ format_date(user.activation_date) }}){% endif %}
+                {% else %}
+                  &#x2718;
+                  <form action="{{request.route_path('admin.users_activate')}}"
+                        class="users-activate-form"
+                        method="POST">
+                    <input type="hidden"
+                          name="csrf_token"
+                          value="{{ get_csrf_token() }}">
+                    <input type="hidden"
+                          name="userid"
+                          value="{{user.userid}}">
+                    <button class="btn btn-primary btn-xs" type="submit">
+                      Activate
+                    </button>
+                  </form>
+                {% endif %}
+              </td>
+              <td>{% if user.admin %}&#x2714;{% else %}&#x2718;{% endif %}</td>
+              <td>{% if user.staff %}&#x2714;{% else %}&#x2718;{% endif %}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% endif %}
+{% endblock %}

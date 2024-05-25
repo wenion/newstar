@@ -71,7 +71,9 @@ def includeme(config):  # pylint: disable=too-many-statements
         traverse="/{pubid}",
     )
     config.add_route("admin.staff", "/admin/staff")
+    config.add_route("admin.batch_users", "/admin/batch/users")
     config.add_route("admin.users", "/admin/users")
+    config.add_route("admin.users_create", "/admin/users/new")
     config.add_route("admin.users_activate", "/admin/users/activate")
     config.add_route("admin.users_delete", "/admin/users/delete")
     config.add_route("admin.users_rename", "/admin/users/rename")
@@ -198,9 +200,25 @@ def includeme(config):  # pylint: disable=too-many-statements
         factory="h.traversal.RegistrationRoot",
         traverse="/{id}",
     )
+    config.add_route(
+        "admin.registrations_profile",
+        "/admin/registrations/profile/{id}",
+        factory="h.traversal.RegistrationRoot",
+        traverse="/{id}",
+    )
+    config.add_route(
+        "admin.registrations_profile_select",
+        "/admin/registrations/profile/select/{id}",
+        factory="h.traversal.RegistrationRoot",
+        traverse="/{id}",
+    )
 
     config.add_route("admin.profiles", "/admin/profiles")
     config.add_route("admin.profiles_create", "/admin/profiles/new")
+    config.add_route(
+        "admin.profiles_create_from_registration",
+        "/admin/profiles/new/{registration_id}"
+    )
     config.add_route(
         "admin.profiles_delete",
         "/admin/profiles/delete/{id}",

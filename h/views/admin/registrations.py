@@ -1,13 +1,14 @@
+from datetime import datetime, timedelta
 from markupsafe import Markup
 from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config, view_defaults
-from sqlalchemy import func, case, cast, String, or_
+from sqlalchemy import func, case, cast, String, or_, and_
 
-from h import form, i18n, models, paginator
-from h.models.course import Course
-from h.models.location import Location
-from h.models.registration import RegistrationTermOption, RegistrationSourceOption, Registration
+from h import form, i18n, paginator
+from h.models import Course, Level, Location, Profile
+from h.models import RegistrationTermOption, RegistrationSourceOption, Registration, ProfileRegistration
 from h.schemas.forms.admin.registration import RegistrationOptionSchema, RegistrationSchema
+from h.schemas.forms.admin.registration_profile import ProfileSelectSchema
 from h.security import Permission
 
 _ = i18n.TranslationString
@@ -332,20 +333,62 @@ class RegistrationSourceOptionEditController:
     renderer="h:templates/admin/registrations.html.jinja2",
     permission=Permission.AdminPage.LOW_RISK,
 )
-@paginator.paginate_query
+@paginator.paginate_dict
 def registration_index(_context, request):
     q_param = request.params.get("q")
+    start_date = request.params.get("start_date")
+    end_date = request.params.get("end_date")
 
     filter_terms = []
     if q_param:
         filter_terms.append(or_(func.lower(Registration.last_name).like(f"%{q_param.lower()}%"),
                                 func.lower(Registration.first_name).like(f"%{q_param.lower()}%")))
+    elif start_date and end_date:
+        start_date = datetime.strptime(start_date, "%Y-%m-%d").date()
+        end_date = datetime.strptime(end_date, "%Y-%m-%d").date() + timedelta(days=1)
+        if start_date > end_date:
+            return {
+                "query": request.db.query(True).filter(False),
+                "error": "End date can't be before start date"
+                }
+        filter_terms.append(and_(Registration.created > start_date, Registration.created < end_date) )
+    elif start_date and not end_date:
+        start_date = datetime.strptime(start_date, "%Y-%m-%d").date()
+        filter_terms.append(and_(Registration.created > start_date))
+    elif not start_date and end_date:
+        end_date = datetime.strptime(end_date, "%Y-%m-%d").date() + timedelta(days=1)
+        filter_terms.append(and_(Registration.created < end_date))
+    else:
+        return {"query": request.db.query(True).filter(False)}
 
-    return (
-        request.db.query(Registration)
+    return {"query": (
+        request.db.query(
+            Registration.id,
+            ProfileRegistration.profile_id,
+            ProfileRegistration.registration_id,
+            Registration.created,
+            Registration.last_name,
+            Registration.first_name,
+            Registration.date_of_birth,
+            Registration.gender,
+            RegistrationTermOption.name.label("term"),
+            Location.abbreviation,
+            Course.day,
+            Course.start_time,
+            Level.name.label("level"),
+            Profile.user_id.label("user"),
+            Registration.memeo,
+            )
         .filter(*filter_terms)
+        .join(ProfileRegistration, ProfileRegistration.registration_id == Registration.id, isouter=True)
+        .join(RegistrationTermOption, RegistrationTermOption.id == Registration.term_id)
+        .join(Course, Course.id == Registration.code_id)
+        .join(Level, Level.id == Registration.level_id)
+        .join(Location, Location.id == Registration.location_id)
+        .join(Profile, Profile.id == ProfileRegistration.profile_id, isouter=True)
+        .group_by(Registration, ProfileRegistration, RegistrationTermOption, Course, Level, Location, Profile)
         .order_by(Registration.created.asc())
-    )
+    )}
 
 
 @view_defaults(
@@ -489,23 +532,25 @@ class RegistrationEditController:
         org = self.opt
 
         def on_success(appstruct):
-            org.last_name = appstruct["last_name"]
-            org.first_name = appstruct["first_name"]
-            org.date_of_birth = appstruct["date_of_birth"]
-            org.gender = appstruct["gender"]
-            org.wechat = appstruct["wechat"]
-            org.email = appstruct["email"]
-            org.first_emergency_contact = appstruct["first_emergency_contact"]
-            org.second_emergency_contact = appstruct["second_emergency_contact"]
-            org.emergency_contact = appstruct["emergency_contact"]
-            org.level_id = appstruct["level"]
-            org.code_id = appstruct["code"]
-            org.term_id = appstruct["term"]
-            org.source_id = appstruct["source"]
-            org.referer = appstruct["referer"]
-            org.memeo = appstruct["memeo"]
+            reg = self.request.db.query(Registration).filter_by(id=org.id).one_or_none()
+            if org:
+                reg.last_name = appstruct["last_name"]
+                reg.first_name = appstruct["first_name"]
+                reg.date_of_birth = appstruct["date_of_birth"]
+                reg.gender = appstruct["gender"]
+                reg.wechat = appstruct["wechat"]
+                reg.email = appstruct["email"]
+                reg.first_emergency_contact = appstruct["first_emergency_contact"]
+                reg.second_emergency_contact = appstruct["second_emergency_contact"]
+                reg.emergency_contact = appstruct["emergency_contact"]
+                reg.level_id = appstruct["level"]
+                reg.code_id = appstruct["code"]
+                reg.term_id = appstruct["term"]
+                reg.source_id = appstruct["source"]
+                reg.referer = appstruct["referer"]
+                reg.memeo = appstruct["memeo"]
 
-            self._update_appstruct()
+                self._update_appstruct()
 
             return self._template_context()
 
@@ -541,3 +586,118 @@ class RegistrationEditController:
             "admin.registrations_delete", id=self.opt.id
         )
         return {"form": self.form.render(), "delete_url": delete_url}
+
+
+@view_defaults(
+    route_name="admin.registrations_profile",
+    renderer="h:templates/admin/registrations_profile.html.jinja2",
+    permission=Permission.AdminPage.LOW_RISK,
+)
+class RegistrationProfileController:
+    def __init__(self, context, request):
+        self.registration = context.registration
+        self.request = request
+
+    @view_config(request_method="GET")
+    def read(self):
+        return self._update_appstruct()
+
+    def _update_appstruct(self):
+        org = self.registration
+        return {
+            "registration_id": org.id,
+            "last_name": org.last_name,
+            "first_name": org.first_name,
+            "date_of_birth": org.date_of_birth,
+            "gender": org.gender,
+            "wechat": org.wechat,
+            "email": org.email,
+            "first_emergency_contact": org.first_emergency_contact,
+            "second_emergency_contact": org.second_emergency_contact,
+            "emergency_contact": org.emergency_contact,
+            "level": org[13],
+            # "code": org[17],
+            # "term": org[22],
+            # "source": org[24],
+            "referer": org.referer,
+            "memeo": org.memeo,
+            "profile": org.Profile,
+        }
+
+
+@view_defaults(
+    route_name="admin.registrations_profile_select",
+    renderer="h:templates/admin/registrations_profile_select.html.jinja2",
+    permission=Permission.AdminPage.LOW_RISK,
+)
+class RegistrationProfileSelectController:
+    def __init__(self, context, request):
+        profile_list = request.find_service(name='profile').get_list()
+
+        self.registration = context.registration
+        self.request = request
+        self.schema = ProfileSelectSchema().bind(
+            request=request,
+            profile=profile_list
+        )
+        self.form = request.create_form(
+            self.schema,
+            buttons=(_("Save"),),
+            return_url=self.request.route_url("admin.registrations")
+        )
+
+        self.form.set_appstruct({"profile": self.registration.profile_id})
+
+    @view_config(request_method="GET")
+    def read(self):
+        return self._template_context(self.registration)
+
+    @view_config(request_method="POST")
+    def update(self):
+        org = self.registration
+
+        def on_success(appstruct):
+            profile_id = appstruct["profile"]
+
+            pr = self.request.db.query(ProfileRegistration).filter_by(registration_id = org.id).one_or_none()
+            if pr:
+                pr.profile_id = profile_id
+            else:
+                pr = ProfileRegistration(registration_id=org.id, profile_id=profile_id)
+                self.request.db.add(pr)
+                self.request.session.flash(
+                    # pylint:disable=consider-using-f-string
+                    Markup(_("Binding account {}".format(org.first_name))),
+                    "success",
+                )
+
+            return HTTPFound(location=self.request.route_path("admin.registrations_profile", id=org.id))
+
+        return form.handle_form_submission(
+            self.request,
+            self.form,
+            on_success=on_success,
+            on_failure=self._template_context,
+        )
+
+    def _template_context(self, org):
+        return {
+            "form": self.form.render(),
+            "registration_id": org.id,
+            "last_name": org.last_name,
+            "first_name": org.first_name,
+            "date_of_birth": org.date_of_birth,
+            "gender": org.gender,
+            "wechat": org.wechat,
+            "email": org.email,
+            "first_emergency_contact": org.first_emergency_contact,
+            "second_emergency_contact": org.second_emergency_contact,
+            "emergency_contact": org.emergency_contact,
+            # "level": org.level_id,
+            # "code": org.code_id,
+            # "term": org.term_id,
+            # "source": org.source_id,
+            "referer": org.referer,
+            "memeo": org.memeo,
+            # "profile": profile_id,
+        }

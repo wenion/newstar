@@ -103,8 +103,12 @@ _ADMIN_MENU = [
     {
         "id": "users",
         "permission": Permission.AdminPage.LOW_RISK,
-        "title": "Users",
-        "route": "admin.users",
+        "title": "Account",
+        "children": [
+            {"route": "admin.users", "title": "Find users"},
+            {"route": "admin.batch_users", "title": "List users"},
+            {"route": "admin.users_create", "title": "Create an account"},
+        ],
     },
     {
         "id": "search",

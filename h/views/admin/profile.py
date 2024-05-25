@@ -1,13 +1,11 @@
 from markupsafe import Markup
 from pyramid.httpexceptions import HTTPFound, HTTPConflict
 from pyramid.view import view_config, view_defaults
-from sqlalchemy import func, case, cast, String, or_
+from sqlalchemy import func, or_
 
 from h import form, i18n, models, paginator
-from h.models.course import Course
-from h.models.location import Location
-from h.models.profile import Profile
-from h.models.registration import RegistrationTermOption, RegistrationSourceOption, Registration
+from h.accounts import schemas
+from h.models import Profile, ProfileRegistration, Registration, User
 from h.schemas.forms.admin.profile import ProfileSchema
 from h.security import Permission
 from h.services.user_unique import DuplicateUserError
@@ -33,10 +31,57 @@ def profile_index(_context, request):
                                 func.lower(Profile.number).like(f"%{q_param.lower()}%"),
                                 ))
 
-    return (
-        request.db.query(Profile)
+    subquery = (
+        request.db.query(
+            Profile.id,
+            Profile.number,
+            Profile.last_name,
+            Profile.first_name,
+            Profile.gender,
+            Profile.referer_id,
+            Profile.user_id,
+            User.username,
+            User.authority,
+            User.email,
+            Profile.memeo,
+            ProfileRegistration.registration_id.label("registration_id"),
+            )
         .filter(*filter_terms)
-        .order_by(Profile.created.asc())
+        .join(ProfileRegistration, Profile.id == ProfileRegistration.profile_id, isouter=True)
+        .join(User, User.id == Profile.user_id, isouter=True)
+        .subquery()
+    )
+
+    return (
+        request.db.query(
+            subquery.c.id,
+            subquery.c.number,
+            subquery.c.last_name,
+            subquery.c.first_name,
+            subquery.c.gender,
+            subquery.c.referer_id,
+            subquery.c.user_id,
+            subquery.c.username,
+            subquery.c.authority,
+            subquery.c.email,
+            subquery.c.memeo,
+            func.array_agg(Registration.first_name).label("registration_first_name_list"),
+            func.array_agg(Registration.id).label("registration_id_list"),
+            )
+        .outerjoin(Registration, Registration.id == subquery.c.registration_id)
+        .group_by(
+            subquery.c.id,
+            subquery.c.number,
+            subquery.c.last_name,
+            subquery.c.first_name,
+            subquery.c.gender,
+            subquery.c.referer_id,
+            subquery.c.user_id,
+            subquery.c.username,
+            subquery.c.authority,
+            subquery.c.email,
+            subquery.c.memeo,
+        )
     )
 
 
@@ -205,7 +250,6 @@ class ProfileEditController:
             org.second_emergency_contact = appstruct["second_emergency_contact"]
             org.emergency_contact = appstruct["emergency_contact"]
             org.memeo = appstruct["memeo"]
-            org.registration_id = appstruct["registration"]
             org.referer_id = appstruct["referer"]
             org.user_id = appstruct["user"]
 
@@ -235,8 +279,6 @@ class ProfileEditController:
             "second_emergency_contact": org.second_emergency_contact,
             "emergency_contact": org.emergency_contact,
             "memeo": org.memeo,
-
-            "registration": org.registration_id,
             "referer": org.referer_id,
             "user": org.user_id,
         })
@@ -246,3 +288,114 @@ class ProfileEditController:
             "admin.profiles_delete", id=self.opt.id
         )
         return {"form": self.form.render(), "delete_url": delete_url}
+
+
+@view_defaults(
+    route_name="admin.profiles_create_from_registration",
+    permission=Permission.AdminPage.LOW_RISK,
+    renderer="h:templates/admin/profiles_create_from_registration.html.jinja2",
+)
+class ProfileNewController:
+    def __init__(self, request):
+        registration_id = request.matchdict["registration_id"]
+
+        profile_list = request.find_service(name='profile').get_list()
+        user_list = request.find_service(name="user").get_list()
+        self.registration = request.find_service(name='registration').get_by_id(registration_id)
+        self.request = request
+        self.schema = ProfileSchema().bind(
+            request=request,
+            profile=profile_list,
+            user=user_list
+            )
+        self.form = request.create_form(self.schema, buttons=(_("Create"),), return_url=self.request.route_url("admin.profiles"))
+
+        self._update_appstruct()
+
+    @view_config(request_method="GET")
+    def read(self):
+        return self._template_context()
+
+    @view_config(request_method="POST")
+    def update(self):
+        def on_success(appstruct):
+            number = appstruct["number"]
+            last_name = appstruct["last_name"]
+            first_name = appstruct["first_name"]
+            date_of_birth = appstruct["date_of_birth"]
+            gender = appstruct["gender"]
+            phone = appstruct["phone"]
+            wechat = appstruct["wechat"]
+            email = appstruct["email"]
+            first_emergency_contact = appstruct["first_emergency_contact"]
+            second_emergency_contact = appstruct["second_emergency_contact"]
+            emergency_contact = appstruct["emergency_contact"]
+            memeo = appstruct["memeo"]
+
+            referer_id = appstruct["referer"]
+            user_id = appstruct["user"]
+
+            try:
+                self.request.find_service(name='profile').ensure_unique(number)
+            except DuplicateUserError as err:
+                raise HTTPConflict(str(err)) from err
+
+            opt = Profile(
+                number=number,
+                last_name=last_name,
+                first_name=first_name,
+                date_of_birth=date_of_birth,
+                gender=gender,
+                wechat=wechat,
+                phone=phone,
+                email=email,
+                first_emergency_contact=first_emergency_contact,
+                second_emergency_contact=second_emergency_contact,
+                emergency_contact=emergency_contact,
+                referer_id=referer_id,
+                user_id=user_id,
+                memeo=memeo,
+                )
+            self.request.db.add(opt)
+            self.request.session.flash(
+                # pylint:disable=consider-using-f-string
+                Markup(_("Created new profile {}".format(last_name))),
+                "success",
+            )
+
+            return HTTPFound(location=self.request.route_url("admin.registrations_profile_select", id=self.registration.id))
+
+        return form.handle_form_submission(
+            self.request,
+            self.form,
+            on_success=on_success,
+            on_failure=self._template_context,
+        )
+
+    def _update_appstruct(self):
+        org = self.registration
+        self.form.set_appstruct({
+            "last_name": org.last_name,
+            "first_name": org.first_name,
+            "date_of_birth": org.date_of_birth,
+            "gender": org.gender,
+            "phone": org.phone,
+            "wechat": org.wechat,
+            "email": org.email,
+            "first_emergency_contact": org.first_emergency_contact,
+            "second_emergency_contact": org.second_emergency_contact,
+            "emergency_contact": org.emergency_contact,
+            "memeo": org.memeo,
+            "referer": org.referer,
+        })
+
+    def _template_context(self):
+        org = self.registration
+        return {
+            "form": self.form.render(),
+            "memeo": org.memeo,
+            "referer": org.referer,
+            "privacy_accepted": org.privacy_accepted,
+            "first_name": org.first_name,
+            "email": org.email,
+        }

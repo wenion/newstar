@@ -140,3 +140,68 @@ def paginate_query(wrapped=None, page_size=PAGE_SIZE):
         }
 
     return wrapper
+
+
+def paginate_dict(wrapped=None, page_size=PAGE_SIZE):
+    """
+    Decorate a view function, providing basic pagination facilities.
+
+    Wraps a view function that returns a :py:class:`sqlalchemy.orm.query.Query`
+    object in order to enable basic pagination. Returns a dictionary containing
+    the results for the current page and page metadata. For example, the simple
+    view function::
+
+        @paginate_query
+        def my_view(context, request):
+            return {"query": request.db.query(User), kwargs)
+
+    will, when wrapped, return a dictionary like the following::
+
+        {
+            "results": [<user1>, <user2>, ..., <user20>],
+            "total": 135,
+            "page": {
+                "cur": 1,
+                "max": 7,
+                "next": 2,
+                "prev": None,
+            }
+            **kwargs,
+        }
+
+    You can also call :py:func:`paginate_query` as a function which returns a
+    decorator, if you wish to modify the options used by the function::
+
+        paginate = paginator.paginate_query(page_size=10)
+
+        @paginate_query
+        def my_view(...):
+            ...
+
+    N.B. The wrapped view function must accept two arguments: the request
+    context and the current request. This decorator does not support view
+    functions which accept only a single argument.
+    """
+    if wrapped is None:  # pragma: no cover
+
+        def decorator(wrap):
+            return paginate_query(wrap, page_size=page_size)
+
+        return decorator
+
+    @functools.wraps(wrapped)
+    def wrapper(context, request):
+        result = wrapped(context, request)
+        query = result['query']
+        result.pop('query')
+        total = query.count()
+        page = paginate(request, total, page_size)
+        offset = (page["cur"] - 1) * page_size
+        return {
+            "results": query.offset(offset).limit(page_size).all(),
+            "total": total,
+            "page": page,
+            **result,
+        }
+
+    return wrapper

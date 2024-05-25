@@ -7,22 +7,48 @@
 
 {% block content %}
 
+  {% if error %}
+   <div style="color: red">
+   {{ error }}
+   </div>
+  {% endif %}
+
   {{ search_form('Search by name…', request.params.get('q')) }}
+
+  <form class="flex search-form">
+    <div>
+      <div> Start date </div>
+      <input type="date"
+            class="form-input__input"
+            name="start_date"
+            value="{{ request.params.get('start_date') or '' }}">
+    </div>
+    <div>
+      <div> End date </div>
+      <input type="date"
+            class="form-input__input"
+            name="end_date"
+            value="{{ request.params.get('end_date') or '' }}">
+    </div>
+    <button class="btn search-form__submit-btn" type="submit">
+      Search
+    </button>
+
+  </form>
+
 
   <div class="table-responsive">
     <table class="table table-striped">
       <thead>
         <tr>
           <th>Id</th>
+          <th>Profile</th>
+          <th>Account</th>
           <th>Create Date</th>
           <th>Last Name</th>
           <th>First Name</th>
           <th>Date of birth</th>
           <th>Gender</th>
-          <th>Wechat</th>
-          <th>Parent 1 Phone No.</th>
-          <th>Emergency Contact</th>
-          <th>Referral person</th>
           <th>Length</th>
           <th>Class Location</th>
           <th>Class Day</th>
@@ -39,46 +65,48 @@
               <a href="{{ edit_url }}">{{ org.id }}</a>
             </td>
             <td>
-              <a href="{{ edit_url }}">{{ org.created.date() }}</a>
+              {% if org.profile_id %}
+                <a href="{{ request.route_url('admin.registrations_profile', id=org.id) }}">&#10004;</a>
+              {% else %}
+                <a href="{{ request.route_url('admin.registrations_profile', id=org.id) }}">&#10006;</a>
+              {% endif %}
             </td>
             <td>
-              <a href="{{ edit_url }}">{{ org.last_name }}</a>
+              {% if org.user %}
+                <a href="{{ request.route_url('admin.users', id=org.id) }}">&#10004;</a>
+              {% else %}
+                <a href="{{ request.route_url('admin.registrations_profile', id=org.id) }}">&#10006;</a>
+              {% endif %}
             </td>
             <td>
-              <a href="{{ edit_url }}">{{ org.first_name }}</a>
+              {{ org.created.date() }}
             </td>
             <td>
-              <a href="{{ edit_url }}">{{ org.date_of_birth.date() }}</a>
+              {{ org.last_name }}
             </td>
             <td>
-              <a href="{{ edit_url }}">{{ org.gender }}</a>
+              {{ org.first_name }}
             </td>
             <td>
-              <a href="{{ edit_url }}">{{ org.wechat }}</a>
+              {{ org.date_of_birth.date() }}
             </td>
             <td>
-              <a href="{{ edit_url }}">{{ org.first_emergency_contact }}</a>
+              {{ org.gender }}
             </td>
             <td>
-              <a href="{{ edit_url }}">{{ org.emergency_contact }}</a>
+              {{ org.term }}
             </td>
             <td>
-              <a href="{{ edit_url }}">{{ org.referer }}</a>
+              {{ org.abbreviation }}
             </td>
             <td>
-              <a href="{{ edit_url }}">{{ org.term.name }}</a>
+              {{ org.day }}
             </td>
             <td>
-              <a href="{{ edit_url }}">{{ org.location.name }}</a>
+              {{ org.start_time  }}
             </td>
             <td>
-              <a href="{{ edit_url }}">{{ org.code.day }}</a>
-            </td>
-            <td>
-              <a href="{{ edit_url }}">{{ org.code.time }}</a>
-            </td>
-            <td>
-              <a href="{{ edit_url }}">{{ org.level.name }}</a>
+              {{ org.level }}
             </td>
             <td>
               <a href="{{ edit_url }}">{{ org.memeo }}</a>

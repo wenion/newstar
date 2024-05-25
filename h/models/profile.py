@@ -23,9 +23,6 @@ class Profile(Base, mixins.Timestamps):
 
     memeo = sa.Column("memeo", sa.UnicodeText(), nullable=True)
 
-    registration_id = sa.Column(sa.Integer, sa.ForeignKey("registration.id"), nullable=True)
-    registration = sa.orm.relationship("Registration", backref="profile")
-
     referer_id = sa.Column(sa.Integer, sa.ForeignKey("profile.id"), nullable=True)
     referer = sa.orm.relationship("Profile", backref="referrals", remote_side="Profile.id")
 
@@ -33,4 +30,4 @@ class Profile(Base, mixins.Timestamps):
     user = sa.orm.relationship("User", backref="profile", foreign_keys=[user_id])
 
     def __repr__(self):
-        return f"<Profile: {str(self.id) + ' ' + self.number + ' ' + self.first_name}>"
+        return f"<Profile: {' No.' + self.number + ' name: ' + self.last_name + ' ' + self.first_name}>"

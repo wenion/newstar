@@ -15,16 +15,6 @@ def registration_gender_select_widget(_node, kwargs):
 
 
 @colander.deferred
-def profile_registration_select_widget(_node, kwargs):
-    return SelectWidget(values=[('', '-- Select registration --'),] + kwargs['registration'])
-
-
-@colander.deferred
-def profile_registration_restricted_select_widget(_node, kwargs):
-    return SelectWidget(values=[('', '-- Select registration --'),] + kwargs['registration'], readonly=True)
-
-
-@colander.deferred
 def profile_select_widget(_node, kwargs):
     return SelectWidget(values=[('', '-- Select account --'),] + kwargs['profile'])
 
@@ -95,12 +85,6 @@ class ProfileSchema(CSRFSchema):
         title=_("Phone"),
         widget=TextInputWidget(),
         missing=""
-    )
-
-    registration = colander.SchemaNode(
-        colander.String(),
-        title=_("Enroll Information"),
-        widget=profile_registration_select_widget,
     )
 
     referer = colander.SchemaNode(
